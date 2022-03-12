@@ -48,8 +48,8 @@
 //! You can find the crate's readme documentation on the
 //! [crates.io] page, or alternatively in the [`README.md`] file on the GitHub project repo.
 //!
-//! [crates.io]: https://crates.io/crates/sensible-env-logger)
-//! [`README.md`]: https://github.com/rnag/sensible-env-logger)
+//! [crates.io]: https://crates.io/crates/sensible-env-logger
+//! [`README.md`]: https://github.com/rnag/sensible-env-logger
 //!
 //! ## Enable logging
 //!
