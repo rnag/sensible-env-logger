@@ -15,7 +15,8 @@ edition = "2021"
 include = [
     "Cargo.toml",
     "LICENSE",
-    "src/**/*"
+    "src/**/*",
+    "examples/**"
 ]
 
 # See here for more info: https://blog.rust-lang.org/2020/03/15/docs-rs-opt-into-fewer-targets.html
