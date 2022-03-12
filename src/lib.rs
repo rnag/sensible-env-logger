@@ -298,37 +298,6 @@ mod local_time {
         builder
     }
 
-    trait ExtTimePart {
-        /// Assuming a timestamp aligns with
-        /// [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt), we desire the
-        /// time part after the "T" in the string representation.
-        fn time_part(&self) -> String;
-    }
-
-    const ZERO: char = '0';
-
-    impl ExtTimePart for env::fmt::Timestamp {
-        fn time_part(&self) -> String {
-            // Assume the format for `RFC 3339` is as below:
-            //   1985-04-12T23:20:50.520Z
-            let timestamp_str: String = self
-                .to_string()
-                .chars()
-                // Here we want to get everything after the "T"...
-                .skip(11)
-                // except the trailing "Z" at the end, which seems a bit redundant.
-                .take(12)
-                .collect();
-
-            // Strip the leading '0' in the hour part, if needed.
-            if timestamp_str.starts_with(ZERO) {
-                timestamp_str.replacen(ZERO, " ", 1)
-            } else {
-                timestamp_str
-            }
-        }
-    }
-
     /// Helper functions
     ///
     /// Below are copied verbatim from [`pretty_env_logger`]
@@ -372,9 +341,16 @@ mod local_time {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+    use log::{debug, trace, warn};
+
     #[test]
-    fn it_works() {
-        let result = 2 + 2;
-        assert_eq!(result, 4);
+    fn logging_in_tests() {
+        // Initialize the global logger with sensible defaults
+        init();
+
+        trace!("A simple trace message");
+        debug!("Debugging something...");
+        warn!("This is a WARNING!");
     }
 }
