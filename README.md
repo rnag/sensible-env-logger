@@ -127,7 +127,8 @@ However, there are a few issues with this approach:
   when your Windows machine reboots for example, or whenever you open a new terminal window.
 
 To solve these issues, you can simply use the `sensible_env_logger` crate, which
-automatically sets up the `RUST_LOG` environment variable with sensible defaults.
+automatically sets up sensible defaults; this involves generating and using a
+directive string in the same form as the `$RUST_LOG` environment variable.
 
 Now, the updated code in the `examples/my_example.rs` would look like this:
 
