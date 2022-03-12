@@ -1,7 +1,6 @@
-# sensible-env-logger &emsp; [![GitHub]][repo]
+# sensible-env-logger
 
-[GitHub]: https://img.shields.io/badge/github-rnag/sensible--env--logger-8da0cb?style=flat-square&labelColor=555555&logo=github
-[repo]: https://github.com/rnag/sensible-env-logger
+[<img alt="github" src="https://img.shields.io/badge/github-source-8da0cb?style=for-the-badge&labelColor=555555&logo=github" height="22">](https://github.com/rnag/sensible-env-logger)
 [<img alt="crates.io" src="https://img.shields.io/crates/v/sensible-env-logger.svg?style=for-the-badge&color=fc8d62&logo=rust" height="22">](https://crates.io/crates/sensible-env-logger)
 [<img alt="docs.rs" src="https://img.shields.io/docsrs/sensible-env-logger/latest?style=for-the-badge&labelColor=555555&logoColor=white&logo=data:image/svg+xml;base64,PHN2ZyByb2xlPSJpbWciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDUxMiA1MTIiPjxwYXRoIGZpbGw9IiNmNWY1ZjUiIGQ9Ik00ODguNiAyNTAuMkwzOTIgMjE0VjEwNS41YzAtMTUtOS4zLTI4LjQtMjMuNC0zMy43bC0xMDAtMzcuNWMtOC4xLTMuMS0xNy4xLTMuMS0yNS4zIDBsLTEwMCAzNy41Yy0xNC4xIDUuMy0yMy40IDE4LjctMjMuNCAzMy43VjIxNGwtOTYuNiAzNi4yQzkuMyAyNTUuNSAwIDI2OC45IDAgMjgzLjlWMzk0YzAgMTMuNiA3LjcgMjYuMSAxOS45IDMyLjJsMTAwIDUwYzEwLjEgNS4xIDIyLjEgNS4xIDMyLjIgMGwxMDMuOS01MiAxMDMuOSA1MmMxMC4xIDUuMSAyMi4xIDUuMSAzMi4yIDBsMTAwLTUwYzEyLjItNi4xIDE5LjktMTguNiAxOS45LTMyLjJWMjgzLjljMC0xNS05LjMtMjguNC0yMy40LTMzLjd6TTM1OCAyMTQuOGwtODUgMzEuOXYtNjguMmw4NS0zN3Y3My4zek0xNTQgMTA0LjFsMTAyLTM4LjIgMTAyIDM4LjJ2LjZsLTEwMiA0MS40LTEwMi00MS40di0uNnptODQgMjkxLjFsLTg1IDQyLjV2LTc5LjFsODUtMzguOHY3NS40em0wLTExMmwtMTAyIDQxLjQtMTAyLTQxLjR2LS42bDEwMi0zOC4yIDEwMiAzOC4ydi42em0yNDAgMTEybC04NSA0Mi41di03OS4xbDg1LTM4Ljh2NzUuNHptMC0xMTJsLTEwMiA0MS40LTEwMi00MS40di0uNmwxMDItMzguMiAxMDIgMzguMnYuNnoiPjwvcGF0aD48L3N2Zz4K" height="22">](https://docs.rs/sensible-env-logger)
 [<img alt="build status" src="https://img.shields.io/github/workflow/status/rnag/sensible-env-logger/build/main?style=for-the-badge" height="22">](https://github.com/rnag/sensible-env-logger/actions?query=branch%3Amain)
@@ -22,7 +21,7 @@ This crate works with Cargo with a `Cargo.toml` like:
 ```toml
 [dependencies]
 log = "0.4"
-sensible-env-logger = "0.0.1"
+sensible-env-logger = "0.0.2"
 ```
 
 ## Getting started
@@ -55,6 +54,12 @@ Then, run your app with `cargo`:
 cargo run
 ```
 
+Alternatively, run your app with the environment variables that control the log level
+for *external* crates as well as *your* crate explicitly set:
+
+```console
+GLOBAL_RUST_LOG=error RUST_LOG=debug cargo run
+```
 
 Even though this crate has the name *env* in it, using the `sensible-env-logger`
 in code is dead simple, and requires minimal configuration.
@@ -122,7 +127,8 @@ However, there are a few issues with this approach:
   when your Windows machine reboots for example, or whenever you open a new terminal window.
 
 To solve these issues, you can simply use the `sensible_env_logger` crate, which
-automatically sets up the `RUST_LOG` environment variable with sensible defaults.
+automatically sets up sensible defaults; this involves generating and using a
+directive string in the same form as the `$RUST_LOG` environment variable.
 
 Now, the updated code in the `examples/my_example.rs` would look like this:
 
@@ -177,7 +183,7 @@ Using `init_timed_short()` requires the `local-time` feature to be enabled:
 
 ```toml
 [dependencies]
-sensible-env-logger = { version = "0.0.1", features = ["local-time"] }
+sensible-env-logger = { version = "0.0.2", features = ["local-time"] }
 ```
 
 ## Contributing
