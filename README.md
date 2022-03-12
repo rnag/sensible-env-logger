@@ -60,7 +60,7 @@ folder in the project repo on GitHub.
 Imagine you are testing out a Cargo project named `my_rust_project`. That is,
 the `Cargo.toml` in your project would look something like this:
 
-```toml
+```toml,no_sync
 [package]
 name = "sensible-env-logger"
 ```
