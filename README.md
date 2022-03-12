@@ -33,7 +33,8 @@ or [tests] for a Cargo project or crate. It can be added as a
 [examples]: http://xion.io/post/code/rust-examples.html
 [tests]: https://doc.rust-lang.org/book/ch11-01-writing-tests.html
 [`dev-dependency`]: https://doc.rust-lang.org/rust-by-example/testing/dev_dependencies.html
-Here's how you'd use it in your application:
+
+First, add some usage to your application:
 
 ```rust
 #[macro_use] extern crate log;
@@ -46,6 +47,13 @@ fn main() {
     error!("much error");
 }
 ```
+
+Then, run your app with `cargo`:
+
+```console
+cargo run
+```
+
 
 Even though this crate has the name `env` in it, using the `sensible-env-logger`
 in code is dead simple, and in general requires zero configuration.
