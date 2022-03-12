@@ -10,6 +10,8 @@
 This is a thin wrapper around [pretty_env_logger]. It requires minimal configuration to set up, and writes
 to standard error with nice colored output for log levels.
 
+![example output](readme-example.png)
+
 [pretty_env_logger]: https://docs.rs/pretty_env_logger
 
 ---
@@ -72,22 +74,24 @@ fn main() {
 }
 ```
 
+[example]: http://xion.io/post/code/rust-examples.html
+
 You can run the new file with `cargo run --example my_example`. But the problem is, you won't
 get any terminal output by default. This is because you initially need to set up the `RUST_LOG`
 environment variable beforehand, in order to see the expected log output.
 
 There are few issues that might arise. For example, what if your Cargo project uses other external libraries? Ideally you want to
-see the `trace` logs from your own project (the crate under test) but not the
+see the `trace` logs from your own project (the crate under test), but *not* the
 `trace` logs from these other libraries. In that case, setting `RUST_LOG=trace`
 doesn't seem the best approach here.
 
 You could then set the `RUST_LOG` environment variable to the following [log format]:
 
 ```shell
-export RUST_LOG='warning,my_rust_project=trace,my_example=trace'
+$ export RUST_LOG='warning,my_rust_project=trace,my_example=trace'
 ```
 
-When leveraging the [`pretty_env_logger`] crate and adding a `pretty_env_logger::init()`
+When leveraging the [`pretty-env-logger`] crate and adding a `pretty_env_logger::init()`
 at the top of the `main` function, this does now work as expected and produce the desired log output.
 
 However, there are a few issues with this approach:
