@@ -1,26 +1,21 @@
 [package]
 name = "sensible-env-logger"
-version = "0.1.0"
+version = "0.0.1"
 authors = ["Ritvik Nag <rv.kvetch@gmail.com>"]
 description = "A pretty, sensible logger for Rust."
 documentation = "https://docs.rs/sensible-env-logger"
 repository = "https://github.com/rnag/sensible-env-logger"
 readme = "README.md"
-keywords = ["sensible-env-logger",
-            # some ideas:
-            #   "logging",
-            #   "api",
-            #   "async",
-            ]
-categories = [
-    # "api-bindings"
-]
+keywords = ["log", "logger", "logging",
+            "env-logger", "pretty-env-logger"]
+categories = ["development-tools::debugging"]
 license = "MIT"
 edition = "2021"
-exclude = [
-    # (optional) list any files we don't want to publish to crates.io
-    # for example, assume the below is a folder which contains large `mp4` files:
-    #   "examples/assets"
+
+include = [
+    "Cargo.toml",
+    "LICENSE",
+    "src/**/*"
 ]
 
 # See here for more info: https://blog.rust-lang.org/2020/03/15/docs-rs-opt-into-fewer-targets.html
@@ -32,6 +27,11 @@ targets = ["x86_64-unknown-linux-gnu"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+pretty_env_logger = "^0.4"
+log = "^0.4"
+
+# Optional dependencies
+chrono = { version = "^0.4", optional=true, default-features = false}
 
 [dev-dependencies]
 # version_sync: to ensure versions in `Cargo.toml` and `README.md` are in sync
@@ -40,16 +40,24 @@ version-sync = "0.9.4"
 # actually, the docs recommend installing this globally:
 #   $ cargo install cargo-bump
 # cargo-bump = "1.1.0"
-# logging utilities
-log = "^0.4"
-pretty_env_logger = "0.4.0"
-# tokio: for `async` support
-tokio = { version = "^1.0", features = ["macros", "rt-multi-thread"] }
-# Some useful libraries - uncomment if needed :-)
-# tabled = "0.4.2"
-# indoc = "1.0.4"
-# criterion = "0.3.5"
 
 ### FEATURES #################################################################
 
 [features]
+
+# This feature activates the `init_timed_short` and `try_init_timed_short`
+# helper functions, which reports only the local time part (without the date)
+# in the log messages.
+#
+# An example record would look like this:
+#    3:15:51.624 INFO  my_module > this is an info message
+local-time = ["chrono/clock"]
+
+
+[[example]]
+name = "log_timed_short"
+required-features = ["local-time"]
+
+[[example]]
+name = "with_builder"
+required-features = ["local-time"]
