@@ -67,8 +67,6 @@ pub use local_time::*;
 pub use pretty_env_logger as pretty;
 pub use pretty_env_logger::env_logger as env;
 
-use log;
-
 use std::borrow::Cow;
 use std::path::Path;
 
@@ -155,10 +153,11 @@ pub fn try_init_timed() -> Result<(), SetLoggerError> {
 /// # How It works
 ///
 /// The package name is automatically taken from the `$CARGO_CRATE_NAME`
-/// environment variable. These environment variables is automatically set by
-/// Cargo when compiling your crate. It then builds a custom log format string,
-/// such as `"warn,my_crate=trace,my_example=trace"`, and sets the `$RUST_LOG`
-/// environment variable to this generated log format.
+/// environment variable. This environment variable is automatically set
+/// by Cargo when compiling your crate. It then builds a custom directives
+/// string in the same form as the `$RUST_LOG` environment variable, and then
+/// parses this generated directives string using
+/// `env_logger::Builder::parse_filters`.
 ///
 /// # Errors
 ///
