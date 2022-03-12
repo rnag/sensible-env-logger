@@ -54,6 +54,12 @@ Then, run your app with `cargo`:
 cargo run
 ```
 
+Alternatively, run your app with the environment variables that control the log level
+for *external* crates as well as *your* crate explicitly set:
+
+```console
+GLOBAL_RUST_LOG=error RUST_LOG=debug cargo run
+```
 
 Even though this crate has the name *env* in it, using the `sensible-env-logger`
 in code is dead simple, and requires minimal configuration.
