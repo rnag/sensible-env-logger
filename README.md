@@ -10,7 +10,7 @@
 This is a thin wrapper around [pretty_env_logger]. It requires minimal configuration to set up, and writes
 to standard error with nice colored output for log levels.
 
-![example-output](readme-example2.png)
+![example-output](readme-example3.png)
 
 [pretty_env_logger]: https://docs.rs/pretty_env_logger
 
