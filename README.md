@@ -10,7 +10,7 @@
 This is a thin wrapper around [pretty_env_logger]. It requires minimal configuration to set up, and writes
 to standard error with nice colored output for log levels.
 
-![example-output](readme-example3.png)
+![example-output](readme-example.png)
 
 [pretty_env_logger]: https://docs.rs/pretty_env_logger
 
@@ -49,6 +49,11 @@ fn main() {
 
 Even though this crate has the name `env` in it, using the `sensible-env-logger`
 in code is dead simple, and in general requires zero configuration.
+
+## Examples
+
+You can check out sample usage of this crate in the [examples/](https://github.com/rnag/sensible-env-logger/tree/main/examples)
+folder in the project repo on GitHub.
 
 ## Rationale
 
@@ -165,11 +170,6 @@ Using `init_timed_short()` requires the `local-time` feature to be enabled:
 [dependencies]
 sensible-env-logger = { version = "0.0.1", features = ["local-time"] }
 ```
-
-## Examples
-
-You can check out sample usage of this crate in the [examples/](https://github.com/rnag/sensible-env-logger/tree/main/examples)
-folder in the project repo on GitHub.
 
 ## Contributing
 
