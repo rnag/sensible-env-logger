@@ -145,20 +145,24 @@ pub fn try_init_timed() -> Result<(), SetLoggerError> {
     )
 }
 
-/// Initialized the global logger with a pretty env logger, with a custom variable name.
+/// Initialized the global logger with a pretty, sensible env logger, with custom
+/// variable names and a custom builder function.
 ///
 /// This should be called early in the execution of a Rust program, and the
 /// global logger may only be initialized once. Future initialization attempts
 /// will return an error.
 ///
+/// # How It works
+///
+/// The package name is automatically taken from the `$CARGO_CRATE_NAME`
+/// environment variable. These environment variables is automatically set by
+/// Cargo when compiling your crate. It then builds a custom log format string,
+/// such as `"warn,my_crate=trace,my_example=trace"`, and sets the `$RUST_LOG`
+/// environment variable to this generated log format.
+///
 /// # Errors
 ///
 /// This function fails to set the global logger if one has already been set.
-/// /// The package name and current package version is
-// /// automatically taken from the `$CARGO_PKG_NAME` and
-// /// `$CARGO_PKG_VERSION` environment variables. These environment
-// /// variables are automatically set by Cargo when compiling your
-// /// crate.
 #[track_caller]
 pub fn try_init_custom_env_and_builder(
     log_env_var: &str,
