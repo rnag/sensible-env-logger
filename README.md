@@ -84,7 +84,7 @@ log = "0.4"
 
 Assuming you are building a library, your `src/lib.rs` could look like this:
 
-```
+```rust
 #[macro_use] extern crate log;
 
 pub fn my_awesome_fn() {
