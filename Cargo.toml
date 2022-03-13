@@ -1,6 +1,6 @@
 [package]
 name = "sensible-env-logger"
-version = "0.0.5"
+version = "0.0.6"
 authors = ["Ritvik Nag <rv.kvetch@gmail.com>"]
 description = "A pretty, sensible logger for Rust."
 documentation = "https://docs.rs/sensible-env-logger"
