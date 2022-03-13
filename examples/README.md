@@ -46,10 +46,12 @@ For example, on *Mac/Linux*:
 
 ```shell
 ❯❯ export RUST_LOG='TRACE'
+❯❯ export GLOBAL_RUST_LOG='WARN'
 ```
 
 On *Windows*:
 
 ```shell
 ❯❯ $env:RUST_LOG='TRACE'
+❯❯ $env:GLOBAL_RUST_LOG='WARN'
 ```
