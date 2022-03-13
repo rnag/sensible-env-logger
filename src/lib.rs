@@ -260,8 +260,18 @@ mod local_time {
     /// the date part.
     ///
     /// ## Example
+    ///
     /// ```console
     /// 12:15:31.683 INFO  my_module         > an info message!
+    /// ```
+    ///
+    /// # Requirements
+    ///
+    /// Using this macro requires the `local-time` feature to be enabled:
+    ///
+    /// ```toml
+    /// [dependencies]
+    /// sensible-env-logger = { version = "*", features = ["local-time"] }
     /// ```
     ///
     /// # Panics

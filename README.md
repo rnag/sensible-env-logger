@@ -88,10 +88,9 @@ Assuming you are building a library, your `src/lib.rs` could look like this:
 #[macro_use] extern crate log;
 
 pub fn my_awesome_fn() {
-    trace!("Getting ready to do something cool...");
+    trace!("getting ready to do something cool...");
     std::thread::sleep(std::time::Duration::from_millis(500));
-    info!("Finished!");
-    warn!("Sample warn message");
+    info!("finished!");
 }
 ```
 
