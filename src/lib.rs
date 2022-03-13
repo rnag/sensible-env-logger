@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/sensible-env-logger/0.0.6")]
+#![doc(html_root_url = "https://docs.rs/sensible-env-logger/0.1")]
 #![warn(rust_2018_idioms, missing_docs)]
 #![deny(warnings, dead_code, unused_imports, unused_mut)]
 
@@ -210,13 +210,19 @@ pub fn try_init_custom_env_and_builder(
     let log_level = get_env(log_env_var, CRATE_LOG_LEVEL);
     let global_log_level = get_env(global_log_env_var, GLOBAL_LOG_LEVEL);
 
-    let filters_str = format!(
-        "{default_lvl},{pkg}={lvl},{mod}={lvl}",
-        default_lvl = global_log_level,
-        pkg = package_name,
-        mod = module_name,
-        lvl = log_level
-    );
+    let filters_str = if log_level.contains('=') {
+        // The env variable `$RUST_LOG` is set to a more complex value such as
+        // `warn,my_module=info`. In that case, just pass through the value.
+        log_level.into_owned()
+    } else {
+        format!(
+            "{default_lvl},{pkg}={lvl},{mod}={lvl}",
+            default_lvl = global_log_level,
+            pkg = package_name,
+            mod = module_name,
+            lvl = log_level
+        )
+    };
 
     let mut builder: Builder = builder_fn();
     builder.parse_filters(&filters_str);
@@ -254,14 +260,24 @@ mod local_time {
     /// global logger may only be initialized once. Future initialization attempts
     /// will return an error.
     ///
-    /// # About
+    /// # Details
     ///
     /// This variant formats log messages with a localized timestamp, without
     /// the date part.
     ///
     /// ## Example
+    ///
     /// ```console
     /// 12:15:31.683 INFO  my_module         > an info message!
+    /// ```
+    ///
+    /// # Requirements
+    ///
+    /// Using this macro requires the `local-time` feature to be enabled:
+    ///
+    /// ```toml
+    /// [dependencies]
+    /// sensible-env-logger = { version = "*", features = ["local-time"] }
     /// ```
     ///
     /// # Panics

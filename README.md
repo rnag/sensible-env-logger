@@ -21,7 +21,7 @@ This crate works with Cargo with a `Cargo.toml` like:
 ```toml
 [dependencies]
 log = "0.4"
-sensible-env-logger = "0.0.6"
+sensible-env-logger = "0.1"
 ```
 
 ## Getting started
@@ -69,6 +69,45 @@ in code is dead simple, and requires minimal configuration.
 You can check out sample usage of this crate in the [examples/](https://github.com/rnag/sensible-env-logger/tree/main/examples)
 folder in the project repo on GitHub.
 
+## Defaults
+
+The helper macros below can be used to configure the global logger
+with *sensible* defaults. Their sample log output is also shown.
+
+> Note: any helper macros, such as `init!()`, should be called
+> early in the execution of a Rust program.
+
+### `init!()`
+
+Initializes the global logger with a pretty, sensible env logger.
+
+```console
+INFO  my_module         > an informational message
+```
+
+### `init_timed!()`
+
+Initializes the global logger with a *timed* pretty, sensible env logger.
+
+```console
+2022-03-12T17:15:31.683Z INFO  my_module         > an informational message
+```
+
+### `init_timed_short!()`
+
+Initializes the global logger with a *localized time* pretty, sensible env logger.
+
+```console
+12:15:31.683 INFO  my_module         > an informational message
+```
+
+Using `init_timed_short!()` requires the `local-time` feature to be enabled:
+
+```toml
+[dev-dependencies]
+sensible-env-logger = { version = "0.1", features = ["local-time"] }
+```
+
 ## Rationale
 
 Imagine you are testing out a Cargo project named `my_rust_project`. That is,
@@ -79,19 +118,18 @@ the `Cargo.toml` in your project would look something like this:
 name = "my-rust-project"
 
 [dependencies]
-log = "0.4"
+log = "*"
 ```
 
 Assuming you are building a library, your `src/lib.rs` could look like this:
 
-```
+```rust
 #[macro_use] extern crate log;
 
 pub fn my_awesome_fn() {
-    trace!("Getting ready to do something cool...");
+    trace!("getting ready to do something cool...");
     std::thread::sleep(std::time::Duration::from_millis(500));
-    info!("Finished!");
-    warn!("Sample warn message");
+    info!("finished!");
 }
 ```
 
@@ -139,7 +177,7 @@ However, there are few limitations with this approach:
   when your Windows machine reboots for example, or whenever you open a new terminal window.
 
 To solve these minor issues you can simply use the `sensible_env_logger` crate, which
-automatically sets up sensible defaults; this involves generating and using a
+automatically sets up *sensible* defaults; this involves generating and using a
 directive string in the same form as the `$RUST_LOG` environment variable.
 
 Now, the updated code in the `examples/my_example.rs` would look like this:
@@ -158,45 +196,6 @@ fn main() {
 ```
 
 [log format]: https://rust-lang-nursery.github.io/rust-cookbook/development_tools/debugging/config_log.html
-
-## Defaults
-
-> Note: any default helper macros, such as `init!()`, should be called
-> early in the execution of a Rust program.
-
-### `init!()`
-
-Initializes the global logger with a pretty, sensible env logger.
-
-Sample output:
-```console
-INFO  my_module         > an informational message
-```
-
-### `init_timed!()`
-
-Initializes the global logger with a *timed* pretty, sensible env logger.
-
-Sample output:
-```console
-2022-03-12T17:15:31.683Z INFO  my_module         > an informational message
-```
-
-### `init_timed_short!()`
-
-Initializes the global logger with a *localized time* pretty, sensible env logger.
-
-Sample output:
-```console
-12:15:31.683 INFO  my_module         > an informational message
-```
-
-Using `init_timed_short!()` requires the `local-time` feature to be enabled:
-
-```toml
-[dependencies]
-sensible-env-logger = { version = "0.0.6", features = ["local-time"] }
-```
 
 ## Contributing
 
