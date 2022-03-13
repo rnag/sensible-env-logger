@@ -48,7 +48,7 @@ fn main() {
 }
 ```
 
-Then run your app with `cargo`:
+Then run your app with `cargo`, and you should see the full log output:
 
 ```console
 cargo run
@@ -58,7 +58,7 @@ Alternatively, run your app with the environment variables that control the log 
 for *external* crates as well as *your* crate explicitly set:
 
 ```console
-GLOBAL_RUST_LOG=error RUST_LOG=debug cargo run
+GLOBAL_RUST_LOG=warn RUST_LOG=trace cargo run
 ```
 
 Even though this crate has the name *env* in it, using the `sensible-env-logger`
@@ -78,8 +78,21 @@ the `Cargo.toml` in your project would look something like this:
 [package]
 name = "my-rust-project"
 
-[dev-dependencies]
+[dependencies]
 log = "0.4"
+```
+
+Assuming you are building a library, your `src/lib.rs` could look like this:
+
+```
+#[macro_use] extern crate log;
+
+pub fn my_awesome_fn() {
+    trace!("Getting ready to do something cool...");
+    std::thread::sleep(std::time::Duration::from_millis(500));
+    info!("Finished!");
+    warn!("Sample warn message");
+}
 ```
 
 You then create a new [example] file named `examples/my_example.rs`, with the following
@@ -92,17 +105,17 @@ use my_rust_project::my_awesome_fn;
 fn main() {
     debug!("my debug message");
     my_awesome_fn();
-    error!("oops! something wrong!");
+    error!("oops! something went wrong!");
 }
 ```
 
 [example]: http://xion.io/post/code/rust-examples.html
 
-You can run the new file with `cargo run --example my_example`. But the problem is, you won't
-get any terminal output by default. This is because you initially need to set up the `RUST_LOG`
+You can run the new file with `cargo run --example my_example`. The problem here is that you won't
+get any terminal output by default; this is because you need to set up the `RUST_LOG`
 environment variable beforehand, in order to see the expected log output.
 
-There are few issues that might arise. For example, what if your Cargo project uses other external libraries? Ideally you want to
+Setting the `RUST_LOG` variable works, but there are a few issues with this. For example, what if your Cargo project uses other external libraries? Ideally you want to
 see the `trace` logs from your own project (the crate under test), but *not* the
 `trace` logs from these other libraries. In that case, setting `RUST_LOG=trace`
 doesn't seem the best approach here.
@@ -116,20 +129,16 @@ $ export RUST_LOG='warning,my_rust_project=trace,my_example=trace'
 When leveraging the [pretty_env_logger] crate and adding a `pretty_env_logger::init()`
 at the top of the `main` function, this does now work as expected and produce the desired log output.
 
-However, there are a few issues with this approach:
+However, there are few limitations with this approach:
 
-* What if you are testing out another example which uses the `log` module? For example,
- an `examples/my_other_example.rs`. This means that you'd again have to update the `RUST_LOG`
- environment variable with the name of the example being run.
-
-* If you are writing a library or a binary, you'd need to update the documentation for running
-  examples to mention that you need to export the `RUST_LOG` env variable explicitly.
-  For example, you'd need to mention that the example is ideally run like `RUST_LOG=trace cargo run --example my_example`.
+* In your Cargo project, you'd need to update the documentation for running examples to
+  mention that you need to export the `RUST_LOG` env variable explicitly. For instance,
+  you'd need to mention that an example is ideally run like `RUST_LOG=trace cargo run --example my_example`.
 
 * You'd need to remember to set the `RUST_LOG` env variable each time. This can be troublesome
   when your Windows machine reboots for example, or whenever you open a new terminal window.
 
-To solve these issues, you can simply use the `sensible_env_logger` crate, which
+To solve these minor issues you can simply use the `sensible_env_logger` crate, which
 automatically sets up sensible defaults; this involves generating and using a
 directive string in the same form as the `$RUST_LOG` environment variable.
 
@@ -144,7 +153,7 @@ fn main() {
 
     debug!("my debug message");
     my_awesome_fn();
-    error!("oops! something wrong!");
+    error!("oops! something went wrong!");
 }
 ```
 
