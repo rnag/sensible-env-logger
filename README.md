@@ -72,7 +72,7 @@ folder in the project repo on GitHub.
 ## Defaults
 
 The helper macros below can be used to configure the global logger
-with *sensible* defaults. A sample log output is also shown.
+with *sensible* defaults. Their sample log output is also shown.
 
 > Note: any helper macros, such as `init!()`, should be called
 > early in the execution of a Rust program.
