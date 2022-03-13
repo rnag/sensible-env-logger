@@ -69,6 +69,45 @@ in code is dead simple, and requires minimal configuration.
 You can check out sample usage of this crate in the [examples/](https://github.com/rnag/sensible-env-logger/tree/main/examples)
 folder in the project repo on GitHub.
 
+## Defaults
+
+The helper macros below can be used to configure the global logger
+with *sensible* defaults. Their sample outputs are also shown.
+
+> Note: any helper macros, such as `init!()`, should be called
+> early in the execution of a Rust program.
+
+### `init!()`
+
+Initializes the global logger with a pretty, sensible env logger.
+
+```console
+INFO  my_module         > an informational message
+```
+
+### `init_timed!()`
+
+Initializes the global logger with a *timed* pretty, sensible env logger.
+
+```console
+2022-03-12T17:15:31.683Z INFO  my_module         > an informational message
+```
+
+### `init_timed_short!()`
+
+Initializes the global logger with a *localized time* pretty, sensible env logger.
+
+```console
+12:15:31.683 INFO  my_module         > an informational message
+```
+
+Using `init_timed_short!()` requires the `local-time` feature to be enabled:
+
+```toml
+[dependencies]
+sensible-env-logger = { version = "0.0.6", features = ["local-time"] }
+```
+
 ## Rationale
 
 Imagine you are testing out a Cargo project named `my_rust_project`. That is,
@@ -157,45 +196,6 @@ fn main() {
 ```
 
 [log format]: https://rust-lang-nursery.github.io/rust-cookbook/development_tools/debugging/config_log.html
-
-## Defaults
-
-> Note: any default helper macros, such as `init!()`, should be called
-> early in the execution of a Rust program.
-
-### `init!()`
-
-Initializes the global logger with a pretty, sensible env logger.
-
-Sample output:
-```console
-INFO  my_module         > an informational message
-```
-
-### `init_timed!()`
-
-Initializes the global logger with a *timed* pretty, sensible env logger.
-
-Sample output:
-```console
-2022-03-12T17:15:31.683Z INFO  my_module         > an informational message
-```
-
-### `init_timed_short!()`
-
-Initializes the global logger with a *localized time* pretty, sensible env logger.
-
-Sample output:
-```console
-12:15:31.683 INFO  my_module         > an informational message
-```
-
-Using `init_timed_short!()` requires the `local-time` feature to be enabled:
-
-```toml
-[dependencies]
-sensible-env-logger = { version = "0.0.6", features = ["local-time"] }
-```
 
 ## Contributing
 

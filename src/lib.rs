@@ -254,7 +254,7 @@ mod local_time {
     /// global logger may only be initialized once. Future initialization attempts
     /// will return an error.
     ///
-    /// # About
+    /// # Details
     ///
     /// This variant formats log messages with a localized timestamp, without
     /// the date part.
