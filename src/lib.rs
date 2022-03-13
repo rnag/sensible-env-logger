@@ -28,7 +28,7 @@
 //! #[macro_use] extern crate log;
 //!
 //! fn main() {
-//!     sensible_env_logger::init();
+//!     sensible_env_logger::init!();
 //!
 //!     trace!("a trace example");
 //!     debug!("deboogging");
@@ -46,7 +46,7 @@
 //!
 //! ## Defaults
 //!
-//! The defaults can be setup by calling `init()` or `try_init()` at the start
+//! The defaults can be setup by calling `init!()` or `try_init!()` at the start
 //! of the program.
 //!
 //! ## Examples
@@ -81,7 +81,6 @@ pub use pretty_env_logger as pretty;
 pub use pretty_env_logger::env_logger as env;
 
 use std::borrow::Cow;
-use std::path::Path;
 
 use env::Builder;
 use log::{trace, SetLoggerError};
@@ -104,11 +103,6 @@ pub(crate) const GLOBAL_LOG_LEVEL: &str = "warn";
 #[macro_export]
 macro_rules! init {
     () => {
-        // TODO I guess remove this once testing is complete
-        println!("Module path: {}", module_path!());
-        println!("Crate name: {}", env!("CARGO_CRATE_NAME"));
-        println!("Package name: {}", env!("CARGO_PKG_NAME"));
-
         $crate::try_init!().unwrap()
     };
 }
@@ -140,13 +134,20 @@ macro_rules! init_timed {
 /// This macro fails to set the global logger if one has already been set.
 #[macro_export]
 macro_rules! try_init {
-    () => {
+    () => {{
+        // TODO I guess remove this once testing is complete
+        println!("Module path: {}", module_path!());
+        println!("Crate name: {}", env!("CARGO_CRATE_NAME"));
+        println!("Package name: {}", env!("CARGO_PKG_NAME"));
+
         $crate::try_init_custom_env_and_builder(
             "RUST_LOG",
             "GLOBAL_RUST_LOG",
+            env!("CARGO_PKG_NAME"),
+            module_path!(),
             $crate::pretty::formatted_builder,
         )
-    };
+    }};
 }
 
 /// Initializes the global logger with a timed pretty, sensible env logger.
@@ -164,6 +165,8 @@ macro_rules! try_init_timed {
         $crate::try_init_custom_env_and_builder(
             "RUST_LOG",
             "GLOBAL_RUST_LOG",
+            env!("CARGO_PKG_NAME"),
+            module_path!(),
             $crate::pretty::formatted_timed_builder,
         )
     };
@@ -188,20 +191,14 @@ macro_rules! try_init_timed {
 /// # Errors
 ///
 /// This function fails to set the global logger if one has already been set.
-#[track_caller]
 pub fn try_init_custom_env_and_builder(
     log_env_var: &str,
     global_log_env_var: &str,
+    package_name: &str,
+    module_name: &str,
     builder_fn: impl Fn() -> Builder,
 ) -> Result<(), SetLoggerError> {
-    let file_path = std::panic::Location::caller().file();
-
-    let module_name = match Path::new(file_path).file_stem() {
-        Some(stem) => stem.to_str().unwrap(),
-        None => file_path,
-    };
-
-    let package_name = env!("CARGO_PKG_NAME").replace('-', "_");
+    let package_name = package_name.replace('-', "_");
 
     let log_level = get_env(log_env_var, CRATE_LOG_LEVEL);
     let global_log_level = get_env(global_log_env_var, GLOBAL_LOG_LEVEL);
@@ -218,10 +215,6 @@ pub fn try_init_custom_env_and_builder(
     builder.parse_filters(&filters_str);
 
     let result = builder.try_init();
-
-    // TODO remove some of these
-    trace!("Crate name inner: {}", env!("CARGO_CRATE_NAME"));
-    trace!("Module name inner: {}", module_path!());
 
     trace!("Filter: {}", filters_str);
 
@@ -300,6 +293,8 @@ mod local_time {
             $crate::try_init_custom_env_and_builder(
                 "RUST_LOG",
                 "GLOBAL_RUST_LOG",
+                env!("CARGO_PKG_NAME"),
+                module_path!(),
                 $crate::formatted_short_timed_builder,
             )
         };

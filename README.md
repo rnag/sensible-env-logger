@@ -40,7 +40,7 @@ First, add some usage to your application:
 #[macro_use] extern crate log;
 
 fn main() {
-    sensible_env_logger::init();
+    sensible_env_logger::init!();
 
     info!("such information");
     warn!("o_O");
@@ -140,7 +140,7 @@ use my_rust_project::my_awesome_fn;
 #[macro_use] extern crate log;
 
 fn main() {
-    sensible_env_logger::init();
+    sensible_env_logger::init!();
 
     debug!("my debug message");
     my_awesome_fn();
@@ -152,10 +152,10 @@ fn main() {
 
 ## Defaults
 
-> Note: any default helper functions, such as `init()`, should be called
+> Note: any default helper macros, such as `init!()`, should be called
 > early in the execution of a Rust program.
 
-### `init()`
+### `init!()`
 
 Initializes the global logger with a pretty, sensible env logger.
 
@@ -164,7 +164,7 @@ Sample output:
 INFO  my_module         > an informational message
 ```
 
-### `init_timed()`
+### `init_timed!()`
 
 Initializes the global logger with a *timed* pretty, sensible env logger.
 
@@ -173,7 +173,7 @@ Sample output:
 2022-03-12T17:15:31.683Z INFO  my_module         > an informational message
 ```
 
-### `init_timed_short()`
+### `init_timed_short!()`
 
 Initializes the global logger with a *localized time* pretty, sensible env logger.
 
@@ -182,7 +182,7 @@ Sample output:
 12:15:31.683 INFO  my_module         > an informational message
 ```
 
-Using `init_timed_short()` requires the `local-time` feature to be enabled:
+Using `init_timed_short!()` requires the `local-time` feature to be enabled:
 
 ```toml
 [dependencies]
