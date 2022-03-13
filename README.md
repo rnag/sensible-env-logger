@@ -72,7 +72,7 @@ folder in the project repo on GitHub.
 ## Defaults
 
 The helper macros below can be used to configure the global logger
-with *sensible* defaults. Their sample outputs are also shown.
+with *sensible* defaults. A sample log output is also shown.
 
 > Note: any helper macros, such as `init!()`, should be called
 > early in the execution of a Rust program.
@@ -104,7 +104,7 @@ Initializes the global logger with a *localized time* pretty, sensible env logge
 Using `init_timed_short!()` requires the `local-time` feature to be enabled:
 
 ```toml
-[dependencies]
+[dev-dependencies]
 sensible-env-logger = { version = "0.0.6", features = ["local-time"] }
 ```
 
