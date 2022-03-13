@@ -10,17 +10,22 @@
 //!
 //! <br>
 //!
-//! A pretty, sensible logger for Rust.
+//! A simple logger, optionally configured via environment variables which
+//! writes to standard error with nice colored output for log levels.
+//! It sets up logging with "sensible" defaults that make it ideal for
+//! running *[examples]* and *[tests]* on a crate of choice.
 //!
+//! [examples]: http://xion.io/post/code/rust-examples.html
+//! [tests]: https://doc.rust-lang.org/book/ch11-01-writing-tests.html
 //! <br>
 //!
 //! ## Usage
 //!
 //! Even though it has `env` in the name, the `sensible-env-logger`
-//! requires zero configuration and setup to use:
+//! requires minimal configuration and setup to use:
 //!
 //! ```
-//! use log::*;
+//! #[macro_use] extern crate log;
 //!
 //! fn main() {
 //!     sensible_env_logger::init();
@@ -32,6 +37,12 @@
 //!     error!("boom");
 //! }
 //! ```
+//!
+//! Run the program and you should see all the log output for your crate.
+//!
+//! Alternatively, run the program with the environment variables that control
+//! the log level for *your* crate as well as *external* crates explicitly set,
+//! like `RUST_LOG=debug` and `GLOBAL_RUST_LOG=error`.
 //!
 //! ## Defaults
 //!
@@ -64,7 +75,9 @@
 
 #[cfg(feature = "local-time")]
 pub use local_time::*;
+#[doc(hidden)]
 pub use pretty_env_logger as pretty;
+#[doc(hidden)]
 pub use pretty_env_logger::env_logger as env;
 
 use std::borrow::Cow;
@@ -118,11 +131,7 @@ pub fn init_timed() {
 /// This function fails to set the global logger if one has already been set.
 #[track_caller]
 pub fn try_init() -> Result<(), SetLoggerError> {
-    try_init_custom_env_and_builder(
-        "RUST_LOG",
-        "GLOBAL_RUST_LOG",
-        pretty_env_logger::formatted_builder,
-    )
+    try_init_custom_env_and_builder("RUST_LOG", "GLOBAL_RUST_LOG", pretty::formatted_builder)
 }
 
 /// Initializes the global logger with a timed pretty, sensible env logger.
@@ -139,7 +148,7 @@ pub fn try_init_timed() -> Result<(), SetLoggerError> {
     try_init_custom_env_and_builder(
         "RUST_LOG",
         "GLOBAL_RUST_LOG",
-        pretty_env_logger::formatted_timed_builder,
+        pretty::formatted_timed_builder,
     )
 }
 
@@ -244,7 +253,7 @@ mod local_time {
     /// global logger may only be initialized once. Future initialization attempts
     /// will return an error.
     ///
-    /// # About
+    /// # Details
     ///
     /// This variant prints log messages with a localized timestamp, without
     /// the date part.
@@ -342,7 +351,7 @@ mod local_time {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use log::{debug, trace, warn};
+    use log::*;
 
     #[test]
     fn logging_in_tests() {
