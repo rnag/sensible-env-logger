@@ -8,7 +8,7 @@ mod nested {
 }
 
 fn main() {
-    sensible_env_logger::init();
+    sensible_env_logger::init!();
 
     // generally, we shouldn't get here actually
     if !log_enabled!(log::Level::Trace) {

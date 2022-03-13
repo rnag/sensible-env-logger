@@ -8,7 +8,7 @@ mod one {
 }
 
 fn main() {
-    if let Err(e) = sensible_env_logger::try_init() {
+    if let Err(e) = sensible_env_logger::try_init!() {
         eprintln!("Some custom msg {}", e);
         panic!("error!") // or whatever
     };

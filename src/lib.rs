@@ -100,10 +100,17 @@ pub(crate) const GLOBAL_LOG_LEVEL: &str = "warn";
 ///
 /// # Panics
 ///
-/// This function fails to set the global logger if one has already been set.
-#[track_caller]
-pub fn init() {
-    try_init().unwrap()
+/// This macro fails to set the global logger if one has already been set.
+#[macro_export]
+macro_rules! init {
+    () => {
+        // TODO I guess remove this once testing is complete
+        println!("Module path: {}", module_path!());
+        println!("Crate name: {}", env!("CARGO_CRATE_NAME"));
+        println!("Package name: {}", env!("CARGO_PKG_NAME"));
+
+        $crate::try_init!().unwrap()
+    };
 }
 
 /// Initializes the global logger with a timed pretty, sensible env logger.
@@ -114,10 +121,12 @@ pub fn init() {
 ///
 /// # Panics
 ///
-/// This function fails to set the global logger if one has already been set.
-#[track_caller]
-pub fn init_timed() {
-    try_init_timed().unwrap();
+/// This macro fails to set the global logger if one has already been set.
+#[macro_export]
+macro_rules! init_timed {
+    () => {
+        $crate::try_init_timed!().unwrap();
+    };
 }
 
 /// Initializes the global logger with a pretty, sensible env logger.
@@ -128,10 +137,16 @@ pub fn init_timed() {
 ///
 /// # Errors
 ///
-/// This function fails to set the global logger if one has already been set.
-#[track_caller]
-pub fn try_init() -> Result<(), SetLoggerError> {
-    try_init_custom_env_and_builder("RUST_LOG", "GLOBAL_RUST_LOG", pretty::formatted_builder)
+/// This macro fails to set the global logger if one has already been set.
+#[macro_export]
+macro_rules! try_init {
+    () => {
+        $crate::try_init_custom_env_and_builder(
+            "RUST_LOG",
+            "GLOBAL_RUST_LOG",
+            $crate::pretty::formatted_builder,
+        )
+    };
 }
 
 /// Initializes the global logger with a timed pretty, sensible env logger.
@@ -142,14 +157,16 @@ pub fn try_init() -> Result<(), SetLoggerError> {
 ///
 /// # Errors
 ///
-/// This function fails to set the global logger if one has already been set.
-#[track_caller]
-pub fn try_init_timed() -> Result<(), SetLoggerError> {
-    try_init_custom_env_and_builder(
-        "RUST_LOG",
-        "GLOBAL_RUST_LOG",
-        pretty::formatted_timed_builder,
-    )
+/// This macro fails to set the global logger if one has already been set.
+#[macro_export]
+macro_rules! try_init_timed {
+    () => {
+        $crate::try_init_custom_env_and_builder(
+            "RUST_LOG",
+            "GLOBAL_RUST_LOG",
+            $crate::pretty::formatted_timed_builder,
+        )
+    };
 }
 
 /// Initialized the global logger with a pretty, sensible env logger, with custom
@@ -202,7 +219,10 @@ pub fn try_init_custom_env_and_builder(
 
     let result = builder.try_init();
 
-    trace!("Crate name: {}", env!("CARGO_CRATE_NAME"));
+    // TODO remove some of these
+    trace!("Crate name inner: {}", env!("CARGO_CRATE_NAME"));
+    trace!("Module name inner: {}", module_path!());
+
     trace!("Filter: {}", filters_str);
 
     result
@@ -246,10 +266,12 @@ mod local_time {
     ///
     /// # Panics
     ///
-    /// This function fails to set the global logger if one has already been set.
-    #[track_caller]
-    pub fn init_timed_short() {
-        try_init_timed_short().unwrap();
+    /// This macro fails to set the global logger if one has already been set.
+    #[macro_export]
+    macro_rules! init_timed_short {
+        () => {
+            $crate::try_init_timed_short!().unwrap();
+        };
     }
 
     /// Initializes the global logger with an "abbreviated" timed pretty, sensible
@@ -271,14 +293,16 @@ mod local_time {
     ///
     /// # Errors
     ///
-    /// This function fails to set the global logger if one has already been set.
-    #[track_caller]
-    pub fn try_init_timed_short() -> Result<(), SetLoggerError> {
-        try_init_custom_env_and_builder(
-            "RUST_LOG",
-            "GLOBAL_RUST_LOG",
-            formatted_short_timed_builder,
-        )
+    /// This macro fails to set the global logger if one has already been set.
+    #[macro_export]
+    macro_rules! try_init_timed_short {
+        () => {
+            $crate::try_init_custom_env_and_builder(
+                "RUST_LOG",
+                "GLOBAL_RUST_LOG",
+                $crate::formatted_short_timed_builder,
+            )
+        };
     }
 
     /// Returns a formatted builder which adds local time to log messages.
@@ -362,7 +386,7 @@ mod tests {
     #[test]
     fn logging_in_tests() {
         // Initialize the global logger with sensible defaults
-        init();
+        init!();
 
         trace!("A simple trace message");
         debug!("Debugging something...");

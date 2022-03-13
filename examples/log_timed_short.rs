@@ -9,7 +9,7 @@ mod nested {
 }
 
 fn main() {
-    sensible_env_logger::init_timed_short();
+    sensible_env_logger::init_timed_short!();
 
     // generally, we shouldn't get here actually
     if !log_enabled!(log::Level::Trace) {
