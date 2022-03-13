@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/sensible-env-logger/0.0.3")]
+#![doc(html_root_url = "https://docs.rs/sensible-env-logger/0.0.6")]
 #![warn(rust_2018_idioms, missing_docs)]
 #![deny(warnings, dead_code, unused_imports, unused_mut)]
 
@@ -134,12 +134,7 @@ macro_rules! init_timed {
 /// This macro fails to set the global logger if one has already been set.
 #[macro_export]
 macro_rules! try_init {
-    () => {{
-        // TODO I guess remove this once testing is complete
-        println!("Module path: {}", module_path!());
-        println!("Crate name: {}", env!("CARGO_CRATE_NAME"));
-        println!("Package name: {}", env!("CARGO_PKG_NAME"));
-
+    () => {
         $crate::try_init_custom_env_and_builder(
             "RUST_LOG",
             "GLOBAL_RUST_LOG",
@@ -147,7 +142,7 @@ macro_rules! try_init {
             module_path!(),
             $crate::pretty::formatted_builder,
         )
-    }};
+    };
 }
 
 /// Initializes the global logger with a timed pretty, sensible env logger.
@@ -179,10 +174,22 @@ macro_rules! try_init_timed {
 /// global logger may only be initialized once. Future initialization attempts
 /// will return an error.
 ///
+/// # Example
+/// ```rust
+/// sensible_env_logger::try_init_custom_env_and_builder(
+///     "MY_RUST_LOG",
+///     "MY_GLOBAL_RUST_LOG",
+///     env!("CARGO_PKG_NAME"),
+///     module_path!(),
+///     sensible_env_logger::pretty::formatted_timed_builder,
+/// );
+/// ```
+///
 /// # How It works
 ///
-/// The package name is automatically taken from the `$CARGO_PKG_NAME`
-/// environment variable. This environment variable is automatically set
+/// The `package_name` and `module_name` arguments are ideally evaluated from
+/// the `$CARGO_PKG_NAME` and `$CARGO_CRATE_NAME` environment variables
+/// respectively. These environment variables are automatically set
 /// by Cargo when compiling your crate. It then builds a custom directives
 /// string in the same form as the `$RUST_LOG` environment variable, and then
 /// parses this generated directives string using
@@ -249,7 +256,7 @@ mod local_time {
     ///
     /// # About
     ///
-    /// This variant prints log messages with a localized timestamp, without
+    /// This variant formats log messages with a localized timestamp, without
     /// the date part.
     ///
     /// ## Example
@@ -276,7 +283,7 @@ mod local_time {
     ///
     /// # Details
     ///
-    /// This variant prints log messages with a localized timestamp, without
+    /// This variant formats log messages with a localized timestamp, without
     /// the date part.
     ///
     /// ## Example
