@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/sensible-env-logger/0.0.2")]
+#![doc(html_root_url = "https://docs.rs/sensible-env-logger/0.0.3")]
 #![warn(rust_2018_idioms, missing_docs)]
 #![deny(warnings, dead_code, unused_imports, unused_mut)]
 
@@ -10,17 +10,22 @@
 //!
 //! <br>
 //!
-//! A pretty, sensible logger for Rust.
+//! A simple logger, optionally configured via environment variables which
+//! writes to standard error with nice colored output for log levels.
+//! It sets up logging with "sensible" defaults that make it ideal for
+//! running *[examples]* and *[tests]* on a crate of choice.
 //!
+//! [examples]: http://xion.io/post/code/rust-examples.html
+//! [tests]: https://doc.rust-lang.org/book/ch11-01-writing-tests.html
 //! <br>
 //!
 //! ## Usage
 //!
 //! Even though it has `env` in the name, the `sensible-env-logger`
-//! requires zero configuration and setup to use:
+//! requires minimal configuration and setup to use:
 //!
 //! ```
-//! use log::*;
+//! #[macro_use] extern crate log;
 //!
 //! fn main() {
 //!     sensible_env_logger::init();
@@ -32,6 +37,12 @@
 //!     error!("boom");
 //! }
 //! ```
+//!
+//! Run the program and you should see all the log output for your crate.
+//!
+//! Alternatively, run the program with the environment variables that control
+//! the log level for *your* crate as well as *external* crates explicitly set,
+//! like `RUST_LOG=debug` and `GLOBAL_RUST_LOG=error`.
 //!
 //! ## Defaults
 //!
@@ -64,14 +75,16 @@
 
 #[cfg(feature = "local-time")]
 pub use local_time::*;
+#[doc(hidden)]
 pub use pretty_env_logger as pretty;
+#[doc(hidden)]
 pub use pretty_env_logger::env_logger as env;
 
 use std::borrow::Cow;
 use std::path::Path;
 
 use env::Builder;
-use log::SetLoggerError;
+use log::{trace, SetLoggerError};
 
 /// Default log level for the Cargo crate or package under test.
 pub(crate) const CRATE_LOG_LEVEL: &str = "trace";
@@ -118,11 +131,7 @@ pub fn init_timed() {
 /// This function fails to set the global logger if one has already been set.
 #[track_caller]
 pub fn try_init() -> Result<(), SetLoggerError> {
-    try_init_custom_env_and_builder(
-        "RUST_LOG",
-        "GLOBAL_RUST_LOG",
-        pretty_env_logger::formatted_builder,
-    )
+    try_init_custom_env_and_builder("RUST_LOG", "GLOBAL_RUST_LOG", pretty::formatted_builder)
 }
 
 /// Initializes the global logger with a timed pretty, sensible env logger.
@@ -139,7 +148,7 @@ pub fn try_init_timed() -> Result<(), SetLoggerError> {
     try_init_custom_env_and_builder(
         "RUST_LOG",
         "GLOBAL_RUST_LOG",
-        pretty_env_logger::formatted_timed_builder,
+        pretty::formatted_timed_builder,
     )
 }
 
@@ -152,7 +161,7 @@ pub fn try_init_timed() -> Result<(), SetLoggerError> {
 ///
 /// # How It works
 ///
-/// The package name is automatically taken from the `$CARGO_CRATE_NAME`
+/// The package name is automatically taken from the `$CARGO_PKG_NAME`
 /// environment variable. This environment variable is automatically set
 /// by Cargo when compiling your crate. It then builds a custom directives
 /// string in the same form as the `$RUST_LOG` environment variable, and then
@@ -175,7 +184,7 @@ pub fn try_init_custom_env_and_builder(
         None => file_path,
     };
 
-    let crate_name = env!("CARGO_CRATE_NAME");
+    let package_name = env!("CARGO_PKG_NAME").replace('-', "_");
 
     let log_level = get_env(log_env_var, CRATE_LOG_LEVEL);
     let global_log_level = get_env(global_log_env_var, GLOBAL_LOG_LEVEL);
@@ -183,14 +192,20 @@ pub fn try_init_custom_env_and_builder(
     let filters_str = format!(
         "{default_lvl},{pkg}={lvl},{mod}={lvl}",
         default_lvl = global_log_level,
-        pkg = crate_name,
+        pkg = package_name,
         mod = module_name,
         lvl = log_level
     );
 
     let mut builder: Builder = builder_fn();
     builder.parse_filters(&filters_str);
-    builder.try_init()
+
+    let result = builder.try_init();
+
+    trace!("Crate name: {}", env!("CARGO_CRATE_NAME"));
+    trace!("Filter: {}", filters_str);
+
+    result
 }
 
 /// Retrieve the value of an environment variable.
@@ -244,7 +259,7 @@ mod local_time {
     /// global logger may only be initialized once. Future initialization attempts
     /// will return an error.
     ///
-    /// # About
+    /// # Details
     ///
     /// This variant prints log messages with a localized timestamp, without
     /// the date part.
@@ -342,7 +357,7 @@ mod local_time {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use log::{debug, trace, warn};
+    use log::*;
 
     #[test]
     fn logging_in_tests() {

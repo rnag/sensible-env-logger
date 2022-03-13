@@ -1,13 +1,12 @@
 [package]
 name = "sensible-env-logger"
-version = "0.0.2"
+version = "0.0.3"
 authors = ["Ritvik Nag <rv.kvetch@gmail.com>"]
 description = "A pretty, sensible logger for Rust."
 documentation = "https://docs.rs/sensible-env-logger"
 repository = "https://github.com/rnag/sensible-env-logger"
 readme = "README.md"
-keywords = ["log", "logger", "logging",
-            "env-logger", "pretty-env-logger"]
+keywords = ["log", "logger", "logging", "env", "pretty"]
 categories = ["development-tools::debugging"]
 license = "MIT"
 edition = "2021"

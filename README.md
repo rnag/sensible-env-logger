@@ -21,7 +21,7 @@ This crate works with Cargo with a `Cargo.toml` like:
 ```toml
 [dependencies]
 log = "0.4"
-sensible-env-logger = "0.0.2"
+sensible-env-logger = "0.0.3"
 ```
 
 ## Getting started
@@ -113,7 +113,7 @@ You could then set the `RUST_LOG` environment variable to the following [log for
 $ export RUST_LOG='warning,my_rust_project=trace,my_example=trace'
 ```
 
-When leveraging the [`pretty-env-logger`] crate and adding a `pretty_env_logger::init()`
+When leveraging the [pretty_env_logger] crate and adding a `pretty_env_logger::init()`
 at the top of the `main` function, this does now work as expected and produce the desired log output.
 
 However, there are a few issues with this approach:
@@ -186,7 +186,7 @@ Using `init_timed_short()` requires the `local-time` feature to be enabled:
 
 ```toml
 [dependencies]
-sensible-env-logger = { version = "0.0.2", features = ["local-time"] }
+sensible-env-logger = { version = "0.0.3", features = ["local-time"] }
 ```
 
 ## Contributing
