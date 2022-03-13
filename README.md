@@ -113,7 +113,7 @@ You could then set the `RUST_LOG` environment variable to the following [log for
 $ export RUST_LOG='warning,my_rust_project=trace,my_example=trace'
 ```
 
-When leveraging the [`pretty-env-logger`] crate and adding a `pretty_env_logger::init()`
+When leveraging the [pretty_env_logger] crate and adding a `pretty_env_logger::init()`
 at the top of the `main` function, this does now work as expected and produce the desired log output.
 
 However, there are a few issues with this approach:
