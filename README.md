@@ -118,7 +118,7 @@ the `Cargo.toml` in your project would look something like this:
 name = "my-rust-project"
 
 [dependencies]
-log = "0.4"
+log = "*"
 ```
 
 Assuming you are building a library, your `src/lib.rs` could look like this:
