@@ -167,7 +167,7 @@ macro_rules! try_init_timed {
     };
 }
 
-/// Initialized the global logger with a pretty, sensible env logger, with custom
+/// Initializes the global logger with a pretty, sensible env logger, with custom
 /// variable names and a custom builder function.
 ///
 /// This should be called early in the execution of a Rust program, and the
@@ -237,7 +237,7 @@ pub fn try_init_custom_env_and_builder(
 /// Retrieve the value of an environment variable.
 pub(crate) fn get_env<'a>(env_var_name: &'a str, default: &'a str) -> Cow<'a, str> {
     match std::env::var(env_var_name) {
-        Ok(value) => Cow::from(value),
+        Ok(value) => Cow::Owned(value),
         _ => Cow::Borrowed(default),
     }
 }
