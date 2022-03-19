@@ -371,6 +371,15 @@ mod local_time {
     /// 12:15:31.683 INFO  my_module         > an info message!
     /// ```
     ///
+    /// # Requirements
+    ///
+    /// Using this macro requires the `local-time` feature to be enabled:
+    ///
+    /// ```toml
+    /// [dependencies]
+    /// sensible-env-logger = { version = "*", features = ["local-time"] }
+    /// ```
+    ///
     /// # Errors
     ///
     /// This macro fails to set the global logger if one has already been set.
