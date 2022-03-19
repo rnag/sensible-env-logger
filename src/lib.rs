@@ -241,23 +241,21 @@ pub fn try_init_custom_env_and_builder(
         // The env variable `$RUST_LOG` is set to a more complex value such as
         // `warn,my_module=info`. In that case, just pass through the value.
         log_level.into_owned()
+    } else if package_name != module_name {
+        format!(
+            "{default_lvl},{pkg}={lvl},{mod}={lvl}",
+            default_lvl = global_log_level,
+            pkg = package_name,
+            mod = module_name,
+            lvl = log_level
+        )
     } else {
-        if package_name != module_name {
-            format!(
-                "{default_lvl},{pkg}={lvl},{mod}={lvl}",
-                default_lvl = global_log_level,
-                pkg = package_name,
-                mod = module_name,
-                lvl = log_level
-            )
-        } else {
-            format!(
-                "{default_lvl},{pkg}={lvl}",
-                default_lvl = global_log_level,
-                pkg = package_name,
-                lvl = log_level
-            )
-        }
+        format!(
+            "{default_lvl},{pkg}={lvl}",
+            default_lvl = global_log_level,
+            pkg = package_name,
+            lvl = log_level
+        )
     };
 
     let mut builder: Builder = builder_fn();
