@@ -21,7 +21,7 @@ This crate works with Cargo with a `Cargo.toml` like:
 ```toml
 [dependencies]
 log = "0.4"
-sensible-env-logger = "0.1"
+sensible-env-logger = "0.2"
 ```
 
 ## Getting started
@@ -105,7 +105,7 @@ Using `init_timed_short!()` requires the `local-time` feature to be enabled:
 
 ```toml
 [dev-dependencies]
-sensible-env-logger = { version = "0.1", features = ["local-time"] }
+sensible-env-logger = { version = "0.2", features = ["local-time"] }
 ```
 
 ## In Tests
