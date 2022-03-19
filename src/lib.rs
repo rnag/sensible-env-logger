@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/sensible-env-logger/0.1")]
+#![doc(html_root_url = "https://docs.rs/sensible-env-logger/0.2")]
 #![warn(rust_2018_idioms, missing_docs)]
 #![deny(warnings, dead_code, unused_imports, unused_mut)]
 
@@ -125,6 +125,32 @@ macro_rules! init_timed {
 
 /// Initializes the global logger with a pretty, sensible env logger.
 ///
+/// This variant should ideally only be used in **tests**. It should be called
+/// early in the execution of a Rust program.
+///
+/// Future initialization attempts will *safely ignore* any errors.
+#[macro_export]
+macro_rules! safe_init {
+    () => {
+        let _ = $crate::try_init!();
+    };
+}
+
+/// Initializes the global logger with a timed pretty, sensible env logger.
+///
+/// This variant should ideally only be used in **tests**. It should be called
+/// early in the execution of a Rust program.
+///
+/// Future initialization attempts will *safely ignore* any errors.
+#[macro_export]
+macro_rules! safe_init_timed {
+    () => {
+        let _ = $crate::try_init_timed!();
+    };
+}
+
+/// Initializes the global logger with a pretty, sensible env logger.
+///
 /// This should be called early in the execution of a Rust program, and the
 /// global logger may only be initialized once. Future initialization attempts
 /// will return an error.
@@ -167,7 +193,7 @@ macro_rules! try_init_timed {
     };
 }
 
-/// Initialized the global logger with a pretty, sensible env logger, with custom
+/// Initializes the global logger with a pretty, sensible env logger, with custom
 /// variable names and a custom builder function.
 ///
 /// This should be called early in the execution of a Rust program, and the
@@ -206,6 +232,7 @@ pub fn try_init_custom_env_and_builder(
     builder_fn: impl Fn() -> Builder,
 ) -> Result<(), SetLoggerError> {
     let package_name = package_name.replace('-', "_");
+    let module_name = base_module(module_name);
 
     let log_level = get_env(log_env_var, CRATE_LOG_LEVEL);
     let global_log_level = get_env(global_log_env_var, GLOBAL_LOG_LEVEL);
@@ -214,12 +241,19 @@ pub fn try_init_custom_env_and_builder(
         // The env variable `$RUST_LOG` is set to a more complex value such as
         // `warn,my_module=info`. In that case, just pass through the value.
         log_level.into_owned()
-    } else {
+    } else if package_name != module_name {
         format!(
             "{default_lvl},{pkg}={lvl},{mod}={lvl}",
             default_lvl = global_log_level,
             pkg = package_name,
             mod = module_name,
+            lvl = log_level
+        )
+    } else {
+        format!(
+            "{default_lvl},{pkg}={lvl}",
+            default_lvl = global_log_level,
+            pkg = package_name,
             lvl = log_level
         )
     };
@@ -237,8 +271,22 @@ pub fn try_init_custom_env_and_builder(
 /// Retrieve the value of an environment variable.
 pub(crate) fn get_env<'a>(env_var_name: &'a str, default: &'a str) -> Cow<'a, str> {
     match std::env::var(env_var_name) {
-        Ok(value) => Cow::from(value),
+        Ok(value) => Cow::Owned(value),
         _ => Cow::Borrowed(default),
+    }
+}
+
+/// Returns the base module name, given the path to a module.
+///
+/// # Example
+/// ```no_test
+/// assert_eq!(base_module("my_bin::my_module::tests"), "my_bin");
+/// ```
+///
+pub(crate) fn base_module(module_name: &str) -> &str {
+    match module_name.split_once("::") {
+        Some((first, _)) => first,
+        None => module_name,
     }
 }
 
@@ -291,6 +339,20 @@ mod local_time {
     }
 
     /// Initializes the global logger with an "abbreviated" timed pretty, sensible
+    /// env logger. See [`init_timed_short`] for more info.
+    ///
+    /// This variant should ideally only be used in **tests**. It should be called
+    /// early in the execution of a Rust program.
+    ///
+    /// Future initialization attempts will *safely ignore* any errors.
+    #[macro_export]
+    macro_rules! safe_init_timed_short {
+        () => {
+            let _ = $crate::try_init_timed_short!();
+        };
+    }
+
+    /// Initializes the global logger with an "abbreviated" timed pretty, sensible
     /// env logger.
     ///
     /// This should be called early in the execution of a Rust program, and the
@@ -305,6 +367,15 @@ mod local_time {
     /// ## Example
     /// ```console
     /// 12:15:31.683 INFO  my_module         > an info message!
+    /// ```
+    ///
+    /// # Requirements
+    ///
+    /// Using this macro requires the `local-time` feature to be enabled:
+    ///
+    /// ```toml
+    /// [dependencies]
+    /// sensible-env-logger = { version = "*", features = ["local-time"] }
     /// ```
     ///
     /// # Errors
@@ -409,5 +480,17 @@ mod tests {
         trace!("A simple trace message");
         debug!("Debugging something...");
         warn!("This is a WARNING!");
+    }
+
+    #[test]
+    fn test_base_module_simple() {
+        let result = base_module("hello_world");
+        assert_eq!(result, "hello_world");
+    }
+
+    #[test]
+    fn test_base_module_with_nested_path() {
+        let result = base_module("my_bin::my_module::tests");
+        assert_eq!(result, "my_bin");
     }
 }
