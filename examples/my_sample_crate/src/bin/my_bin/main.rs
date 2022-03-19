@@ -19,7 +19,7 @@ mod tests {
 
     #[test]
     fn test_log() {
-        let _ = sensible_env_logger::try_init!();
+        sensible_env_logger::safe_init!();
 
         nested::deep();
 

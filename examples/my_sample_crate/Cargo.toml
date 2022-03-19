@@ -7,4 +7,4 @@ edition = "2021"
 
 [dependencies]
 log = "^0.4"
-sensible-env-logger = "*"
+sensible-env-logger = "0.2"
