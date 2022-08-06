@@ -93,7 +93,7 @@ Initializes the global logger with a *timed* pretty, sensible env logger.
 2022-03-12T17:15:31.683Z INFO  my_module         > an informational message
 ```
 
-### `init_timed_short!()`
+### `init_timed_short!()` - [`*`]
 
 Initializes the global logger with a *localized time* pretty, sensible env logger.
 
@@ -101,7 +101,7 @@ Initializes the global logger with a *localized time* pretty, sensible env logge
 12:15:31.683 INFO  my_module         > an informational message
 ```
 
-### `init_timed_local!()`
+### `init_timed_local!()` - [`*`]
 
 Initializes the global logger with a "no-frills" local date/time
 pretty, sensible env logger.
