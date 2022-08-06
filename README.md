@@ -132,9 +132,7 @@ Using the macros marked with a `*` above, require the `local-time` feature to be
 
 ```toml
 [dev-dependencies]
-sensible-env-logger = { version = "0.
-
-3", features = ["local-time"] }
+sensible-env-logger = { version = "0.3", features = ["local-time"] }
 ```
 
 ## In Tests
