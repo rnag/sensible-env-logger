@@ -110,7 +110,7 @@ pretty, sensible env logger.
 2021-10-27 12:15:31.683 - INFO  my_module         > an informational message
 ```
 
-### `init_timed_local_iso!()` ([`*`])
+### `init_timed_local_iso!()` [`*`]
 
 Initializes the global logger with a local-timed pretty, sensible
 env logger.
