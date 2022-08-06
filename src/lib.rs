@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/sensible-env-logger/0.2")]
+#![doc(html_root_url = "https://docs.rs/sensible-env-logger/0.3")]
 #![warn(rust_2018_idioms, missing_docs)]
 #![deny(warnings, dead_code, unused_imports, unused_mut)]
 

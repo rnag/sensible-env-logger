@@ -21,7 +21,7 @@ This crate works with Cargo with a `Cargo.toml` like:
 ```toml
 [dependencies]
 log = "0.4"
-sensible-env-logger = "0.2"
+sensible-env-logger = "0.3"
 ```
 
 ## Getting started
@@ -132,7 +132,9 @@ Using the macros marked with a `*` above, require the `local-time` feature to be
 
 ```toml
 [dev-dependencies]
-sensible-env-logger = { version = "0.2", features = ["local-time"] }
+sensible-env-logger = { version = "0.
+
+3", features = ["local-time"] }
 ```
 
 ## In Tests
