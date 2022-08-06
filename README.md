@@ -108,6 +108,27 @@ Using `init_timed_short!()` requires the `local-time` feature to be enabled:
 sensible-env-logger = { version = "0.2", features = ["local-time"] }
 ```
 
+### `init_timed_local!()`
+
+Initializes the global logger with a "no-frills" local date/time
+pretty, sensible env logger.
+
+```console
+2021-10-27 12:15:31.683 - INFO  my_module         > an informational message
+```
+
+### `init_timed_local_iso!()`
+
+Initializes the global logger with a local-timed pretty, sensible
+env logger.
+
+> This variant formats log messages with a localized timestamp and zone,
+> in ISO-8601/ RFC 3339 date & time format.
+
+```console
+2022-10-27T12:15:31.683+08:00 - INFO  my_module         > an informational message
+```
+
 ## In Tests
 
 When running *tests* on a crate, you can use the `safe_init!()` macro
