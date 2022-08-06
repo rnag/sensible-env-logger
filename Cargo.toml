@@ -1,6 +1,6 @@
 [package]
 name = "sensible-env-logger"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Ritvik Nag <rv.kvetch@gmail.com>"]
 description = "A pretty, sensible logger for Rust."
 documentation = "https://docs.rs/sensible-env-logger"
@@ -56,6 +56,14 @@ local-time = ["chrono/clock"]
 
 [[example]]
 name = "log_timed_short"
+required-features = ["local-time"]
+
+[[example]]
+name = "log_timed_local"
+required-features = ["local-time"]
+
+[[example]]
+name = "log_timed_local_iso"
 required-features = ["local-time"]
 
 [[example]]
