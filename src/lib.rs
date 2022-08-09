@@ -73,17 +73,17 @@
 //! [pretty_env_logger]: https://docs.rs/pretty_env_logger
 //! [env_logger]: https://docs.rs/env_logger
 
-#[cfg(feature = "local-time")]
-pub use local_time::*;
+use std::borrow::Cow;
+
+use env::Builder;
+use log::{SetLoggerError, trace};
 #[doc(hidden)]
 pub use pretty_env_logger as pretty;
 #[doc(hidden)]
 pub use pretty_env_logger::env_logger as env;
 
-use std::borrow::Cow;
-
-use env::Builder;
-use log::{trace, SetLoggerError};
+#[cfg(feature = "local-time")]
+pub use local_time::*;
 
 /// Default log level for the Cargo crate or package under test.
 pub(crate) const CRATE_LOG_LEVEL: &str = "trace";
@@ -292,14 +292,14 @@ pub(crate) fn base_module(module_name: &str) -> &str {
 
 #[cfg(feature = "local-time")]
 mod local_time {
-    use super::*;
-
     use std::fmt;
     use std::sync::atomic::{AtomicUsize, Ordering};
 
     use chrono::Local;
     use env::fmt::{Color, Style, StyledValue};
     use log::Level;
+
+    use super::*;
 
     /// Local time zone format (only time)
     ///
@@ -632,8 +632,9 @@ mod local_time {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use log::*;
+
+    use super::*;
 
     #[test]
     fn logging_in_tests() {
