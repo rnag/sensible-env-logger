@@ -21,7 +21,7 @@ This crate works with Cargo with a `Cargo.toml` like:
 ```toml
 [dependencies]
 log = "0.4"
-sensible-env-logger = "0.2"
+sensible-env-logger = "0.3"
 ```
 
 ## Getting started
@@ -93,7 +93,7 @@ Initializes the global logger with a *timed* pretty, sensible env logger.
 2022-03-12T17:15:31.683Z INFO  my_module         > an informational message
 ```
 
-### `init_timed_short!()`
+### `init_timed_short!()` - [`*`]
 
 Initializes the global logger with a *localized time* pretty, sensible env logger.
 
@@ -101,11 +101,38 @@ Initializes the global logger with a *localized time* pretty, sensible env logge
 12:15:31.683 INFO  my_module         > an informational message
 ```
 
-Using `init_timed_short!()` requires the `local-time` feature to be enabled:
+### `init_timed_local!()` - [`*`]
+
+Initializes the global logger with a "no-frills" local date/time
+pretty, sensible env logger.
+
+```console
+2021-10-27 12:15:31.683 - INFO  my_module         > an informational message
+```
+
+### `init_timed_local_iso!()` - [`*`]
+
+Initializes the global logger with a local-timed pretty, sensible
+env logger.
+
+> This variant formats log messages with a localized timestamp,
+> in ISO-8601/ RFC 3339 date & time format.
+
+```console
+2022-10-27T12:15:31.683+08:00 - INFO  my_module         > an informational message
+```
+
+## Optional Features
+
+[`*`]: #local-time
+
+### Local Time
+
+Using the macros marked with a `*` above, require the `local-time` feature to be enabled:
 
 ```toml
 [dev-dependencies]
-sensible-env-logger = { version = "0.2", features = ["local-time"] }
+sensible-env-logger = { version = "0.3", features = ["local-time"] }
 ```
 
 ## In Tests

@@ -17,6 +17,17 @@ Possible header types:
   - `other_method()`
 -->
 
+## v0.3.0 (2022-08-09)
+
+### Features
+
+- Add new helper macros to log the local date
+  and local date/time ISO:
+  - `init_timed_local` / `safe_init_timed_local` / `try_init_timed_local`
+  - `init_timed_local_iso` / `safe_init_timed_local_iso` / `try_init_timed_local_iso`
+- Add new examples `log_timed_local` and `log_timed_local_iso`
+  to confirm intended functionality.
+
 ## v0.2.0 (2022-03-19)
 
 ### Features

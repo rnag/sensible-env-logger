@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/sensible-env-logger/0.2")]
+#![doc(html_root_url = "https://docs.rs/sensible-env-logger/0.3")]
 #![warn(rust_2018_idioms, missing_docs)]
 #![deny(warnings, dead_code, unused_imports, unused_mut)]
 
@@ -73,17 +73,17 @@
 //! [pretty_env_logger]: https://docs.rs/pretty_env_logger
 //! [env_logger]: https://docs.rs/env_logger
 
-#[cfg(feature = "local-time")]
-pub use local_time::*;
+use std::borrow::Cow;
+
+use env::Builder;
+use log::{SetLoggerError, trace};
 #[doc(hidden)]
 pub use pretty_env_logger as pretty;
 #[doc(hidden)]
 pub use pretty_env_logger::env_logger as env;
 
-use std::borrow::Cow;
-
-use env::Builder;
-use log::{trace, SetLoggerError};
+#[cfg(feature = "local-time")]
+pub use local_time::*;
 
 /// Default log level for the Cargo crate or package under test.
 pub(crate) const CRATE_LOG_LEVEL: &str = "trace";
@@ -292,14 +292,35 @@ pub(crate) fn base_module(module_name: &str) -> &str {
 
 #[cfg(feature = "local-time")]
 mod local_time {
-    use super::*;
-
     use std::fmt;
     use std::sync::atomic::{AtomicUsize, Ordering};
 
     use chrono::Local;
     use env::fmt::{Color, Style, StyledValue};
     use log::Level;
+
+    use super::*;
+
+    /// Local time zone format (only time)
+    ///
+    /// # Example
+    /// `10:17:52.831`
+    ///
+    pub const TIME_ONLY_FMT: &str = "%l:%M:%S.%3f";
+
+    /// Local time zone format
+    ///
+    /// # Example
+    /// `2022-07-27 10:17:52.831 -`
+    ///
+    pub const LOCAL_TIME_FMT: &str = "%Y-%m-%d %l:%M:%S.%3f -";
+
+    /// ISO 8601 / RFC 3339 date & time format.
+    ///
+    /// # Example
+    /// `2022-07-27T17:34:44.531+08:00`
+    ///
+    pub const ISO_FMT: &str = "%Y-%m-%dT%H:%M:%S.%3f%:z";
 
     /// Initializes the global logger with an "abbreviated" timed pretty, sensible
     /// env logger.
@@ -338,8 +359,83 @@ mod local_time {
         };
     }
 
+    /// Initializes the global logger with a "no-frills" local date/time
+    /// pretty, sensible env logger.
+    ///
+    /// This should be called early in the execution of a Rust program, and the
+    /// global logger may only be initialized once. Future initialization attempts
+    /// will return an error.
+    ///
+    /// # Details
+    ///
+    /// This variant formats log messages with a localized timestamp,
+    /// prefixed by the date part.
+    ///
+    /// ## Example
+    ///
+    /// ```console
+    /// 2021-10-27 12:15:31.683 - INFO  my_module         > an info message!
+    /// ```
+    ///
+    /// # Requirements
+    ///
+    /// Using this macro requires the `local-time` feature to be enabled:
+    ///
+    /// ```toml
+    /// [dependencies]
+    /// sensible-env-logger = { version = "*", features = ["local-time"] }
+    /// ```
+    ///
+    /// # Panics
+    ///
+    /// This macro fails to set the global logger if one has already been set.
+    #[macro_export]
+    macro_rules! init_timed_local {
+        () => {
+            $crate::try_init_timed_local!().unwrap();
+        };
+    }
+
+    /// Initializes the global logger with a local-timed pretty, sensible
+    /// env logger.
+    ///
+    /// This should be called early in the execution of a Rust program, and the
+    /// global logger may only be initialized once. Future initialization attempts
+    /// will return an error.
+    ///
+    /// # Details
+    ///
+    /// This variant formats log messages with a localized timestamp and zone,
+    /// in complete ISO-8601/ RFC 3339 date & time format.
+    ///
+    /// ## Example
+    ///
+    /// ```console
+    /// 2022-10-27T12:15:31.683+08:00 - INFO  my_module         > an info message!
+    /// ```
+    ///
+    /// # Requirements
+    ///
+    /// Using this macro requires the `local-time` feature to be enabled:
+    ///
+    /// ```toml
+    /// [dependencies]
+    /// sensible-env-logger = { version = "*", features = ["local-time"] }
+    /// ```
+    ///
+    /// # Panics
+    ///
+    /// This macro fails to set the global logger if one has already been set.
+    #[macro_export]
+    macro_rules! init_timed_local_iso {
+        () => {
+            $crate::try_init_timed_local_iso!().unwrap();
+        };
+    }
+
     /// Initializes the global logger with an "abbreviated" timed pretty, sensible
-    /// env logger. See [`init_timed_short`] for more info.
+    /// env logger.
+    /// See [`init_timed_short!`](macro.init_timed_short.html) for more info.
     ///
     /// This variant should ideally only be used in **tests**. It should be called
     /// early in the execution of a Rust program.
@@ -352,31 +448,44 @@ mod local_time {
         };
     }
 
+    /// Initializes the global logger with a "no-frills" local date/time
+    /// pretty, sensible env logger.
+    /// See [`init_timed_local!`](macro.init_timed_local.html) for more info.
+    ///
+    /// This variant should ideally only be used in **tests**. It should be called
+    /// early in the execution of a Rust program.
+    ///
+    /// Future initialization attempts will *safely ignore* any errors.
+    #[macro_export]
+    macro_rules! safe_init_timed_local {
+        () => {
+            let _ = $crate::try_init_timed_local!();
+        };
+    }
+
+    /// Initializes the global logger with a local-timed pretty, sensible
+    /// env logger.
+    /// See [`init_timed_local_iso!`](macro.init_timed_local_iso.html) for more info.
+    ///
+    /// This variant should ideally only be used in **tests**. It should be called
+    /// early in the execution of a Rust program.
+    ///
+    /// Future initialization attempts will *safely ignore* any errors.
+    #[macro_export]
+    macro_rules! safe_init_timed_local_iso {
+        () => {
+            let _ = $crate::try_init_timed_local_iso!();
+        };
+    }
+
     /// Initializes the global logger with an "abbreviated" timed pretty, sensible
     /// env logger.
+    ///
+    /// See [`init_timed_short!`](macro.init_timed_short.html) for more info.
     ///
     /// This should be called early in the execution of a Rust program, and the
     /// global logger may only be initialized once. Future initialization attempts
     /// will return an error.
-    ///
-    /// # Details
-    ///
-    /// This variant formats log messages with a localized timestamp, without
-    /// the date part.
-    ///
-    /// ## Example
-    /// ```console
-    /// 12:15:31.683 INFO  my_module         > an info message!
-    /// ```
-    ///
-    /// # Requirements
-    ///
-    /// Using this macro requires the `local-time` feature to be enabled:
-    ///
-    /// ```toml
-    /// [dependencies]
-    /// sensible-env-logger = { version = "*", features = ["local-time"] }
-    /// ```
     ///
     /// # Errors
     ///
@@ -389,41 +498,95 @@ mod local_time {
                 "GLOBAL_RUST_LOG",
                 env!("CARGO_PKG_NAME"),
                 module_path!(),
-                $crate::formatted_short_timed_builder,
+                $crate::formatted_local_time_builder_fn($crate::TIME_ONLY_FMT),
             )
         };
     }
 
-    /// Returns a formatted builder which adds local time to log messages.
+    /// Initializes the global logger with a "no-frills" local date/time
+    /// pretty, sensible env logger.
+    ///
+    /// See [`init_timed_local!`](macro.init_timed_local.html) for more info.
+    ///
+    /// This should be called early in the execution of a Rust program, and the
+    /// global logger may only be initialized once. Future initialization attempts
+    /// will return an error.
+    ///
+    /// # Errors
+    ///
+    /// This macro fails to set the global logger if one has already been set.
+    #[macro_export]
+    macro_rules! try_init_timed_local {
+        () => {
+            $crate::try_init_custom_env_and_builder(
+                "RUST_LOG",
+                "GLOBAL_RUST_LOG",
+                env!("CARGO_PKG_NAME"),
+                module_path!(),
+                $crate::formatted_local_time_builder_fn($crate::LOCAL_TIME_FMT),
+            )
+        };
+    }
+
+    /// Initializes the global logger with a local-timed pretty, sensible
+    /// env logger.
+    ///
+    /// See [`init_timed_local_iso!`](macro.init_timed_local_iso.html) for more info.
+    ///
+    /// This should be called early in the execution of a Rust program, and the
+    /// global logger may only be initialized once. Future initialization attempts
+    /// will return an error.
+    ///
+    /// # Errors
+    ///
+    /// This macro fails to set the global logger if one has already been set.
+    #[macro_export]
+    macro_rules! try_init_timed_local_iso {
+        () => {
+            $crate::try_init_custom_env_and_builder(
+                "RUST_LOG",
+                "GLOBAL_RUST_LOG",
+                env!("CARGO_PKG_NAME"),
+                module_path!(),
+                $crate::formatted_local_time_builder_fn($crate::ISO_FMT),
+            )
+        };
+    }
+
+    /// Returns a function (closure) that returns a formatted builder
+    /// function which adds local time to log messages, per a specified
+    /// date/time format.
     ///
     /// ## Example
     /// ```console
     /// 12:15:31.683 INFO  my_module         > an info message!
     /// ```
     ///
-    pub fn formatted_short_timed_builder() -> Builder {
-        let mut builder = Builder::new();
+    pub fn formatted_local_time_builder_fn(fmt: &'static str) -> impl Fn() -> Builder {
+        || {
+            let mut builder = Builder::new();
 
-        builder.format(|f, record| {
-            use std::io::Write;
-            let target = record.target();
-            let max_width = max_target_width(target);
+            builder.format(|f, record| {
+                use std::io::Write;
+                let target = record.target();
+                let max_width = max_target_width(target);
 
-            let mut style = f.style();
-            let level = colored_level(&mut style, record.level());
+                let mut style = f.style();
+                let level = colored_level(&mut style, record.level());
 
-            let mut style = f.style();
-            let target = style.set_bold(true).value(Padded {
-                value: target,
-                width: max_width,
+                let mut style = f.style();
+                let target = style.set_bold(true).value(Padded {
+                    value: target,
+                    width: max_width,
+                });
+
+                let time = Local::now().format(fmt);
+
+                writeln!(f, " {} {} {} > {}", time, level, target, record.args(),)
             });
 
-            let time = Local::now().format("%l:%M:%S.%3f");
-
-            writeln!(f, " {} {} {} > {}", time, level, target, record.args(),)
-        });
-
-        builder
+            builder
+        }
     }
 
     /// Helper functions
@@ -469,8 +632,9 @@ mod local_time {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use log::*;
+
+    use super::*;
 
     #[test]
     fn logging_in_tests() {
