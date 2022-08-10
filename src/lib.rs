@@ -202,7 +202,7 @@ macro_rules! try_init_timed {
 ///
 /// # Example
 /// ```rust
-/// sensible_env_logger::try_init_custom_env_and_builder(
+/// let _ = sensible_env_logger::try_init_custom_env_and_builder(
 ///     "MY_RUST_LOG",
 ///     "MY_GLOBAL_RUST_LOG",
 ///     env!("CARGO_PKG_NAME"),
@@ -411,7 +411,7 @@ mod local_time {
     /// ## Example
     ///
     /// ```console
-    /// 2022-10-27T12:15:31.683+08:00 - INFO  my_module         > an info message!
+    /// 2022-10-27T12:15:31.683+08:00 INFO  my_module         > an info message!
     /// ```
     ///
     /// # Requirements
@@ -553,9 +553,8 @@ mod local_time {
         };
     }
 
-    /// Returns a function (closure) that returns a formatted builder
-    /// function which adds local time to log messages, per a specified
-    /// date/time format.
+    /// Returns a function (closure) that returns a formatted builder which
+    /// adds local time to log messages, per a specified date/time format.
     ///
     /// ## Example
     /// ```console

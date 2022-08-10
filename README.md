@@ -90,7 +90,7 @@ INFO  my_module         > an informational message
 Initializes the global logger with a *timed* pretty, sensible env logger.
 
 ```console
-2022-03-12T17:15:31.683Z INFO  my_module         > an informational message
+2022-03-24T17:15:31.683Z INFO  my_module         > an informational message
 ```
 
 ### `init_timed_short!()` - [`*`]
@@ -107,7 +107,7 @@ Initializes the global logger with a "no-frills" local date/time
 pretty, sensible env logger.
 
 ```console
-2021-10-27 12:15:31.683 - INFO  my_module         > an informational message
+2022-03-24 12:15:31.683 - INFO  my_module         > an informational message
 ```
 
 ### `init_timed_local_iso!()` - [`*`]
@@ -119,7 +119,7 @@ env logger.
 > in ISO-8601/ RFC 3339 date & time format.
 
 ```console
-2022-10-27T12:15:31.683+08:00 - INFO  my_module         > an informational message
+2022-03-24T12:15:31.683+08:00 INFO  my_module         > an informational message
 ```
 
 ## Optional Features
