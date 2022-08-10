@@ -17,6 +17,12 @@ Possible header types:
   - `other_method()`
 -->
 
+## v0.3.1 (2022-08-10)
+
+### Bug Fixes
+
+* Correct example usage and log format as it appears in the documentation.
+
 ## v0.3.0 (2022-08-09)
 
 ### Features
