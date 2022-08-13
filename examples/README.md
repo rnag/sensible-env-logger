@@ -46,7 +46,7 @@ An example of including the local timestamp (without the date part) in the log
 messages:
 
 ```shell
->> rx log_timed_short
+❯❯ rx log_timed_short
 ```
 
 To pass arguments to a script, you can include them after the `--`.
