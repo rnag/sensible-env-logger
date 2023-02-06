@@ -1,7 +1,7 @@
 #![doc(html_root_url = "https://docs.rs/sensible-env-logger/0.3.2")]
 #![warn(rust_2018_idioms, missing_docs)]
 #![deny(warnings, dead_code, unused_imports, unused_mut)]
-#[allow(clippy::uninlined_format_args)]
+#![allow(clippy::uninlined_format_args)]
 //! [![github]](https://github.com/rnag/sensible-env-logger)&ensp;[![crates-io]](https://crates.io/crates/sensible-env-logger)&ensp;[![docs-rs]](https://docs.rs/sensible-env-logger)
 //!
 //! [github]: https://img.shields.io/badge/github-8da0cb?style=for-the-badge&labelColor=555555&logo=github
