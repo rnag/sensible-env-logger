@@ -1,7 +1,7 @@
 #![doc(html_root_url = "https://docs.rs/sensible-env-logger/0.3.2")]
 #![warn(rust_2018_idioms, missing_docs)]
 #![deny(warnings, dead_code, unused_imports, unused_mut)]
-
+#[allow(clippy::uninlined_format_args)]
 //! [![github]](https://github.com/rnag/sensible-env-logger)&ensp;[![crates-io]](https://crates.io/crates/sensible-env-logger)&ensp;[![docs-rs]](https://docs.rs/sensible-env-logger)
 //!
 //! [github]: https://img.shields.io/badge/github-8da0cb?style=for-the-badge&labelColor=555555&logo=github
@@ -601,7 +601,7 @@ mod local_time {
     }
 
     impl<T: fmt::Display> fmt::Display for Padded<T> {
-        fn fmt<'a>(&self, f: &mut fmt::Formatter<'a>) -> fmt::Result {
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
             write!(f, "{: <width$}", self.value, width = self.width)
         }
     }
@@ -618,7 +618,7 @@ mod local_time {
         }
     }
 
-    fn colored_level<'a>(style: &'a mut Style, level: Level) -> StyledValue<'a, &'static str> {
+    fn colored_level(style: &'_ mut Style, level: Level) -> StyledValue<'_, &'static str> {
         match level {
             Level::Trace => style.set_color(Color::Magenta).value("TRACE"),
             Level::Debug => style.set_color(Color::Blue).value("DEBUG"),
